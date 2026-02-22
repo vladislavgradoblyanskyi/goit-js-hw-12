@@ -69,12 +69,9 @@ form.addEventListener("submit", async (event) =>{
 
 btn.addEventListener('click', async ()=>{
         page++;
-        btn.disabled = true;
-        btn.innerHTML = 'Loading...';
-
+        hideLoadMoreButton();
         showLoader();
         try{
-            
             const data = await getImagesByQuery(query_global,page);
             console.log(page);
 
@@ -88,7 +85,7 @@ btn.addEventListener('click', async ()=>{
               behavior: "smooth",
             });
 
-            if (page * perPage >= data.totalHits) {
+            if (page * 15 >= data.totalHits) {
 
               hideLoadMoreButton();
 
@@ -111,7 +108,5 @@ btn.addEventListener('click', async ()=>{
         }
         finally{
             hideLoader();
-            btn.disabled = false;
-            btn.innerHTML = 'Load more';
         }
     })
