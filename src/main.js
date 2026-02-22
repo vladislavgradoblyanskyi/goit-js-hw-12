@@ -3,6 +3,7 @@ import "izitoast/dist/css/iziToast.min.css";
 
 import  {getImagesByQuery}  from "./js/pixabay-api.js";
 import {createGallery,clearGallery,showLoader,hideLoader,showLoadMoreButton,hideLoadMoreButton} from "./js/render-functions.js";
+import axios from "axios";
 
 
 hideLoadMoreButton();
@@ -10,10 +11,9 @@ hideLoadMoreButton();
 const form = document.querySelector(".form");
 const btn = document.querySelector('.load');
 
-form.addEventListener("submit", function (event) {
+form.addEventListener("submit", async (event) =>{
 
   event.preventDefault();
-  showLoader();
 
   const query = event.target.elements["search-text"].value.trim();
   let page = 1;
@@ -27,44 +27,40 @@ form.addEventListener("submit", function (event) {
   }
 
 
+    showLoader();
   clearGallery();
  
-  getImagesByQuery(query,page)
-   
-    .then( (data) => {
-
-      if (data.hits.length === 0) {
-
+  try{
+    const data = await getImagesByQuery(query,page);
+    if (data.hits.length === 0) {
         iziToast.error({
-          message: "Sorry, there are no images matching your search query. Please try again!",
-          position: "topRight",
-        });
-
+            message: "Sorry, there are no images matching your search query. Please try again!",
+            position: "topRight",
+            });
         return;
-      }
-      createGallery(data.hits);
-    })
-    .catch( () =>
-        {
-      iziToast.error({
-        message: "Помилка запиту на сервер",
-        position: "topRight",
-      });
-
-    })
-    .finally(()=>{
-        hideLoader();
-        form.reset();
+        }
+        createGallery(data.hits);
         showLoadMoreButton();
-    })
-
-    btn.addEventListener('click', ()=>{
+        }
+  catch(error){
+    console.log(error);
+  }
+  finally{
+    hideLoader();
+    form.reset();
+  }
+    btn.addEventListener('click', async ()=>{
         page++;
-    getImagesByQuery(query,page)
-        .then((data) => {
+        try{
+            console.log(page);
+            const data = await getImagesByQuery(query,page);
             createGallery(data.hits);
-        })
-        .catch((error)=>{
+            
+        }
+        catch(error){
             console.log(error);
-        })})
-});
+        }
+
+    })
+}
+)

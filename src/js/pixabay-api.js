@@ -19,5 +19,6 @@ export async function getImagesByQuery(query,page=1) {
   }
   catch(error){
     console.log(error);
+    console.log(error.message);
   }
 }
