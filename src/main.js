@@ -24,9 +24,11 @@ form.addEventListener("submit", async (event) =>{
     });
     return;
   }
+  page = 1;
 
   query_global = query;
     showLoader();
+    hideLoadMoreButton();
     clearGallery();
  
   try{
@@ -40,7 +42,7 @@ form.addEventListener("submit", async (event) =>{
         }
         createGallery(data.hits);
         showLoadMoreButton();
-        
+
 
         if(15>data.totalHits){
             hideLoadMoreButton();
@@ -77,6 +79,27 @@ btn.addEventListener('click', async ()=>{
             console.log(page);
 
             createGallery(data.hits);
+
+            const card = document.querySelector(".gallery-item");
+            const cardHeight = card.getBoundingClientRect().height;
+
+            window.scrollBy({
+              top: cardHeight * 2,
+              behavior: "smooth",
+            });
+
+            if (page * perPage >= data.totalHits) {
+
+              hideLoadMoreButton();
+
+              iziToast.info({
+                message: `We're sorry, but you've reached the end of search results.`,
+                position: "topRight",
+              });
+
+            } else {
+              showLoadMoreButton();
+             }
             
         }
         catch(error){
