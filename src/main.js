@@ -49,9 +49,17 @@ form.addEventListener("submit", async (event) =>{
     hideLoader();
     form.reset();
   }
-    btn.addEventListener('click', async ()=>{
+    
+}
+)
+btn.addEventListener('click', async ()=>{
         page++;
+        btn.disabled = true;
+        btn.innerHTML = 'Loading';
+
+        showLoader();
         try{
+            
             console.log(page);
             const data = await getImagesByQuery(query,page);
             createGallery(data.hits);
@@ -60,7 +68,9 @@ form.addEventListener("submit", async (event) =>{
         catch(error){
             console.log(error);
         }
+        finally{
+            hideLoader();
+            btn.disabled = false;
+        }
 
     })
-}
-)
