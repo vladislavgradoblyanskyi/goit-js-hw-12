@@ -7,17 +7,16 @@ import axios from "axios";
 
 
 hideLoadMoreButton();
-
+let page = 1;
 const form = document.querySelector(".form");
 const btn = document.querySelector('.load');
+let query_global= ''
 
 form.addEventListener("submit", async (event) =>{
 
   event.preventDefault();
-
   const query = event.target.elements["search-text"].value.trim();
-  let page = 1;
-
+    
   if (!query) {
     iziToast.warning({
       message: "Поле пошуку порожнє!",
@@ -26,9 +25,9 @@ form.addEventListener("submit", async (event) =>{
     return;
   }
 
-
+  query_global = query;
     showLoader();
-  clearGallery();
+    clearGallery();
  
   try{
     const data = await getImagesByQuery(query,page);
@@ -41,36 +40,55 @@ form.addEventListener("submit", async (event) =>{
         }
         createGallery(data.hits);
         showLoadMoreButton();
+        
+
+        if(15>data.totalHits){
+            hideLoadMoreButton();
         }
+        else{
+            showLoadMoreButton();
+        }
+
+        }
+
   catch(error){
     console.log(error);
+    iziToast.error({
+            message: `something went wrong :( ${error}`,
+            position: "topRight",
+            });
   }
   finally{
     hideLoader();
-    form.reset();
   }
-    
+    return query;
 }
 )
+
 btn.addEventListener('click', async ()=>{
         page++;
         btn.disabled = true;
-        btn.innerHTML = 'Loading';
+        btn.innerHTML = 'Loading...';
 
         showLoader();
         try{
             
+            const data = await getImagesByQuery(query_global,page);
             console.log(page);
-            const data = await getImagesByQuery(query,page);
+
             createGallery(data.hits);
             
         }
         catch(error){
             console.log(error);
+            iziToast.error({
+                message: `something went wrong :( ${error}`,
+                position: "topRight",
+                });
         }
         finally{
             hideLoader();
             btn.disabled = false;
+            btn.innerHTML = 'Load more';
         }
-
     })
