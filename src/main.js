@@ -46,6 +46,10 @@ form.addEventListener("submit", async (event) =>{
 
         if(15>data.totalHits){
             hideLoadMoreButton();
+                iziToast.info({
+                    message: `We're sorry, but you've reached the end of search results.`,
+                    position: "topRight",
+              });
         }
         else{
             showLoadMoreButton();
