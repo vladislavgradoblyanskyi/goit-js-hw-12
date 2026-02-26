@@ -11,6 +11,7 @@ let page = 1;
 const form = document.querySelector(".form");
 const btn = document.querySelector('.load');
 let query_global= ''
+per_page = 15;
 
 form.addEventListener("submit", async (event) =>{
 
@@ -44,7 +45,7 @@ form.addEventListener("submit", async (event) =>{
         showLoadMoreButton();
 
 
-        if(15>data.totalHits){
+        if(per_page>data.totalHits){
             hideLoadMoreButton();
                 iziToast.info({
                     message: `We're sorry, but you've reached the end of search results.`,
@@ -89,7 +90,7 @@ btn.addEventListener('click', async ()=>{
               behavior: "smooth",
             });
 
-            if (page * 15 >= data.totalHits) {
+            if (page * per_page >= data.totalHits) {
 
               hideLoadMoreButton();
 
